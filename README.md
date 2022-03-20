@@ -1,5 +1,5 @@
 # FFT research
-[image](cover.jpeg)!
+![image](cover.jpeg)
 In this repo I will gather codes and samples of Fast Fourier Transform for data manipulation using python and C++.
 
 ## Links
