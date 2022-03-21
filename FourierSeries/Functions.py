@@ -3,6 +3,7 @@ import numpy as np
 import sympy as sp
 import matplotlib as mp
 import pandas as pd
+from sympy import re, im, I, E, symbols
 
 # Plotting
 from sympy.plotting import plot 
@@ -57,14 +58,25 @@ class Func2D:
 
     # Turning a Symbolic Function into Numeric values with a given Sample rate.
     def TurnNumeric(self,SampleRate=10, Precision=3, Range=[0,1]):
+        self.SampleRate = SampleRate
         SampleRate = np.linspace(Range[0], Range[1], SampleRate)
         y = []
         for x in SampleRate:
             Eval = self.SymbolicTerm.evalf(subs={self.Symbols[0] : x})
-            y.append(Eval)
 
+            y.append(Eval)
+        
         self.NumericTerm = {'x': SampleRate, 'y': np.array(y)}
     
+    def ImportFromCSV(self,path, column):
+        df = pd.read_csv(path, skipinitialspace=True, usecols=column)
+        SampleRate = len(df.index)
+        self.SampleRate = SampleRate
+        y = np.transpose(df.to_numpy())
+        self.NumericTerm = {'x': 0, 'y': y}
+
+
+
     def Ready(self,Stateof):
         assert Stateof in ["Num", "Sym", "NumSym"],'The argument should be "Num", "Sym", "NumSym"'
         if Stateof == "Num" and len(self.NumericTerm) == 2:

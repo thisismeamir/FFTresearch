@@ -1,12 +1,13 @@
-from numbers import Integral
 
-from matplotlib.transforms import Transform
+from typing import List
 from Functions import Func2D as func
 import sympy as sp
 import numpy as np
 import matplotlib as mp
 import pandas as pd
 from sympy import re, im, I, E, symbols
+import matplotlib.pyplot as plt
+
 
 class FourierSeries():
     def __init__(self, Boundaries = [-1*np.pi,np.pi]):
@@ -47,6 +48,7 @@ class FourierSeries():
 
 class FourierTransform:
     def __init__(self):
+        self.UseasObject =True
         pass
 
     def SymbolicFT(self,Expression):
@@ -61,11 +63,20 @@ class FourierTransform:
         self.TransformedSymbolicInversed = sp.inverse_fourier_transform(Expression,omega,x)
         self.TransformedSymbolicInversedLatex = sp.latex(self.TransformedSymbolicInversed)
 
-    def NumericFT(self,Numerics):
-        pass
-    def NumericFTInverse(self,Numerics):
-        pass
+class DiscreteFourierTransform:
+    def __init__(self, Samplerate: int):
+        self.Samplerate = Samplerate
+        self.FundamentalExponent = np.exp(-1j * 2 * np.pi / self.Samplerate)
+        J,K = np.meshgrid(np.arange(self.Samplerate),np.arange(self.Samplerate))
+        self.DFTMatrix = np.power(self.FundamentalExponent,J*K)
+        # print(self.DFTMatrix)
+    
+    def NumericDFT(self,Samples: List):
+        self.Samples = Samples
+        self.DFTFrequencies = np.matmul(self.DFTMatrix , (np.transpose(self.Samples)))
+        print(self.DFTFrequencies)
 
+        
         
 
 
@@ -74,11 +85,16 @@ class FourierTransform:
 functionFourier = FourierSeries([-1,1])
 functionFourier.SymbolicSeries(function.SymbolicTerm,10)
 print(functionFourier.FourierSeriesExpressionLatex)
-'''
+
 function = func('x')
-function.Symbolic('sp.exp(-x**2)')
-Ftrans = FourierTransform()
-Ftrans.SymbolicFT(function.SymbolicTerm)
-Ftrans.SymbolicFTInverse(Ftrans.TransformedSymbolic)
-print(Ftrans.TransformedSymbolicLatex)
-print(Ftrans.TransformedSymbolicInversedLatex)
+function.Symbolic('sp.cos(x)')
+function.TurnNumeric(5,3,[0,1])
+function.NumericTerm['y']
+DFTCalc = DiscreteFourierTransform(5)
+DFTCalc.NumericDFT(function.NumericTerm['y'][0])
+'''
+
+function = func('x')
+function.ImportFromCSV('data.csv',["q"])
+DFTCalc = DiscreteFourierTransform(6)
+DFTCalc.NumericDFT(function.NumericTerm['y'])
