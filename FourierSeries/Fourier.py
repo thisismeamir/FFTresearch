@@ -1,8 +1,12 @@
+from numbers import Integral
+
+from matplotlib.transforms import Transform
 from Functions import Func2D as func
 import sympy as sp
 import numpy as np
 import matplotlib as mp
 import pandas as pd
+from sympy import re, im, I, E, symbols
 
 class FourierSeries():
     def __init__(self, Boundaries = [-1*np.pi,np.pi]):
@@ -30,7 +34,7 @@ class FourierSeries():
             self.FourierSeriesExpression = self.FourierSeriesExpression + Constants['B'][i]* sp.sin((i+1) * 2 * sp.pi * x/Length) + Constants['A'][i]* sp.cos((i+1) * 2 * sp.pi * x/Length)
             i = i+1
         self.FourierSeriesExpressionLatex = sp.latex(self.FourierSeriesExpression)
-        
+
     def SymbolicGeneralizeSeries(self,Expression):
         i = sp.symbols('i')
         x = sp.symbols('x')
@@ -40,9 +44,41 @@ class FourierSeries():
         Bi = Norm * (sp.integrate(Expression*sp.sin(i * 2 * sp.pi * x/Length),x).evalf(subs={x: self.Boundaries[1]}) - sp.integrate(Expression*sp.sin(i * 2 * sp.pi * x/Length),x).evalf(subs={x: self.Boundaries[0]}))
             
         return Ai,Bi
+
+class FourierTransform:
+    def __init__(self):
+        pass
+
+    def SymbolicFT(self,Expression):
+        omega = sp.symbols('omega')
+        x     = sp.symbols('x')
+        self.TransformedSymbolic = sp.fourier_transform(Expression, x, omega)
+        self.TransformedSymbolicLatex = sp.latex(self.TransformedSymbolic)
+
+    def SymbolicFTInverse(self,Expression):
+        omega = sp.symbols('omega')
+        x     = sp.symbols('x')
+        self.TransformedSymbolicInversed = sp.inverse_fourier_transform(Expression,omega,x)
+        self.TransformedSymbolicInversedLatex = sp.latex(self.TransformedSymbolicInversed)
+
+    def NumericFT(self,Numerics):
+        pass
+    def NumericFTInverse(self,Numerics):
+        pass
+
         
-function = func('x')
-function.Symbolic('x**2 + x*2')
+
+
+'''        
+
 functionFourier = FourierSeries([-1,1])
 functionFourier.SymbolicSeries(function.SymbolicTerm,10)
 print(functionFourier.FourierSeriesExpressionLatex)
+'''
+function = func('x')
+function.Symbolic('sp.exp(-x**2)')
+Ftrans = FourierTransform()
+Ftrans.SymbolicFT(function.SymbolicTerm)
+Ftrans.SymbolicFTInverse(Ftrans.TransformedSymbolic)
+print(Ftrans.TransformedSymbolicLatex)
+print(Ftrans.TransformedSymbolicInversedLatex)
