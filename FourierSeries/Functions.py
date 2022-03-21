@@ -79,7 +79,8 @@ class Func2D:
             return "NumericSymbolicTrue"
         else:
             return "NumericSymbolicFalse"
-        
+    
+    
        
 
         
@@ -89,7 +90,3 @@ class Func2D:
     def Plot(self, keys=""):
         exec('plot(self.SymbolicTerm, {0})'.format(keys))
     
-fx =Func2D('x')
-fx.Symbolic('sp.cos(x)**2')
-fx.TurnNumeric(100,5,[4,6.6])
-print(fx.NumericTerm['y'])
