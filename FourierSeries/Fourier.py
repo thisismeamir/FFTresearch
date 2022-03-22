@@ -5,7 +5,7 @@ import sympy as sp
 import numpy as np
 import matplotlib as mp
 import pandas as pd
-from sympy import re, im, I, E, symbols
+from sympy import expand, re, im, I, E, symbols
 import matplotlib.pyplot as plt
 
 
@@ -74,7 +74,11 @@ class DiscreteFourierTransform:
     def NumericDFT(self,Samples: List):
         self.Samples = Samples
         self.DFTFrequencies = np.matmul(self.DFTMatrix , (np.transpose(self.Samples)))
-        print(self.DFTFrequencies)
+class FastFourierTransform:
+    def __init__(self,Samplerate:int,Samples):
+        self.Samplerate = Samplerate
+        self.Sameples = Samples
+        self.FFTFrequencies = np.fft.fft(Samples,Samplerate)
 
         
         
@@ -92,9 +96,13 @@ function.TurnNumeric(5,3,[0,1])
 function.NumericTerm['y']
 DFTCalc = DiscreteFourierTransform(5)
 DFTCalc.NumericDFT(function.NumericTerm['y'][0])
-'''
+
 
 function = func('x')
-function.ImportFromCSV('data.csv',["q"])
-DFTCalc = DiscreteFourierTransform(6)
-DFTCalc.NumericDFT(function.NumericTerm['y'])
+function.Symbolic('sp.cos(x)+x**2')
+expandFou = FourierSeries([-1,1])
+expandFou.SymbolicSeries(function.SymbolicTerm,5)
+print(expandFou.FourierSeriesExpressionLatex)
+print(function.SymbolicTerm)
+
+'''
