@@ -33,9 +33,9 @@ class SignalProcessing():
         Easy fft for signals!
         '''
         assert key in ['both', 'freq', ''], "key should be in ['both', 'freq', '']."
-        SampleLength = SampleRate * Duration
+        SampleLength = int(SampleRate * Duration)
         Amplitudes = rfft(Signal)
-        Frequencies = rfftfreq(SampleLength,1/SampleRate)
+        Frequencies = rfftfreq(SampleRate,1/SampleRate)
         # Returns
         if key == 'both':
             return Amplitudes, Frequencies

@@ -1,12 +1,11 @@
 from msilib.schema import File
-from Function import func2D as func
+from Library.Function import func2D as func
 import numpy as np
 import scipy as sc
+from Library.Generators import GeneralGenerators as gg
 from scipy.io.wavfile import write 
-from msilib.schema import File
-import numpy as np
-import scipy as sc
-from scipy.io.wavfile import write 
+
+
 
 class Signal(func):
     def __init__(self, SampleRate, Numpy="", Numeric="", Symbols="", ):
@@ -23,9 +22,10 @@ class Signal(func):
         Making a Sample from a given numpy signal
         '''
         assert len(Range) == 2, "Range should be in the form  [a,b]."
+        
         self.SampleDuration = Length
         SampleNumber = int(self.SampleDuration * self.SampleRate)
-        x = func.LinearSampleMaker(Range, SampleNumber)
+        x = gg.LinearSampleMaker(Range, SampleNumber)
         self.SignalSample = self.TurnNumpyNumeric(x, Constants, Signal = True)
         self.SignalSampleVar = self.SignalSample['x']
         self.SignalSample = self.SignalSample['y']
@@ -39,10 +39,26 @@ class Signal(func):
     
     def NormalizerInt16(self):
         '''
-        Normalizing the sample for audio making
+        Normalizing the sample for audio making.
         '''
         self.SignalSample = np.int16((self.SignalSample/self.SignalSample.max())*32767)
+   
+    # ----------        Noising        ----------                                               
+    def AddNoise(self, Range, std, Region='All'):
+        '''
+        Generates Noise to a Region of Data
+        '''
+        if Region == 'All':
+            Noise = gg.GaussianNoise(Range, self.SignalSampleVar, std)
+            self.SignalSampleNoised = self.SignalSample + Noise
+        else:
+            SampleVar = self.SignalSample[Region[0]*self.SampleRate:Region[1]*self.SampleRate]
+            Noise = self.NoiseSample(Range, SampleVar, std)
+            self.SignalSampleNoised = np.concatenate((self.SignalSample[0:Region[0]*self.SampleRate],
+            self.SignalSample[Region[0]*self.SampleRate:Region[1]*self.SampleRate]+Noise))
 
+                     
+                                                    
     # ---------- Audio ----------
     def NumericAudioCreator (self, Duration, FileName="wave"):
         '''

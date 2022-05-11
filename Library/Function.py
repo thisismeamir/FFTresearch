@@ -53,7 +53,7 @@ class func2D():
         Turns Numpy Expressions into Numeric functions.
         '''
         self.SampleLength = len(Sample)
-        self.SampleRate   = self.SampleLength//self.Duration
+        self.SampleRate   = self.SampleLength//self.SampleDuration
         Sample = Sample
         y =[]
         if Symbols == "":
@@ -78,17 +78,6 @@ class func2D():
         y = np.transpose(df[columns[1]].to_numpy())
         self.NumericTerm = {'x': x, 'y': y}
     
-    # ---------- Static Methods ----------
-    @staticmethod
-    def LinearSampleMaker(Range, SampleNumber):
-        '''
-        Given a list for range and a SampleNumber this method generates a sample
-        '''
-        assert len(Range)==2, 'you should give a list of two numbers for Range of your Sample'
-        assert SampleNumber//1 == SampleNumber,"SampleNumber should be an integer"
-        Sample = np.linspace(Range[0], Range[1], SampleNumber)
-        return Sample
-
     # ---------- Status ----------    
     def Ready(self,Stateof):
         '''
