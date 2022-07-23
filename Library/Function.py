@@ -78,6 +78,14 @@ class func2D():
         y = np.transpose(df[columns[1]].to_numpy())
         self.NumericTerm = {'x': x, 'y': y}
     
+    def Keep(self, Range = list):
+        assert len(Range) == 2,'Range must contain 2 elements both integer'
+        ''' 
+        Keeping the first 'n' elements of a Numeric value dictionary
+        '''
+        self.NumericTerm['x'] = self.NumericTerm['x'][Range[0]:Range[1]]
+        self.NumericTerm['y'] = self.NumericTerm['y'][Range[0]:Range[1]]
+
     # ---------- Status ----------    
     def Ready(self,Stateof):
         '''
